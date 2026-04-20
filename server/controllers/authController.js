@@ -1,9 +1,44 @@
 import User from '../models/User.js';
+import Category from '../models/Category.js';
 import { generateToken } from '../utils/jwt.js';
 import { successResponse, errorResponse } from '../utils/response.js';
 import { OAuth2Client } from 'google-auth-library';
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+const DEFAULT_CATEGORIES = [
+  // Expense categories
+  { name: 'Food & Dining', type: 'expense', icon: '🍔', color: '#FF6B6B' },
+  { name: 'Transport', type: 'expense', icon: '🚗', color: '#4ECDC4' },
+  { name: 'Shopping', type: 'expense', icon: '🛍️', color: '#FF69B4' },
+  { name: 'Entertainment', type: 'expense', icon: '🎮', color: '#FFD93D' },
+  { name: 'Healthcare', type: 'expense', icon: '⚕️', color: '#6BCB77' },
+  { name: 'Utilities', type: 'expense', icon: '💡', color: '#4D96FF' },
+  { name: 'Education', type: 'expense', icon: '📚', color: '#9B59B6' },
+  { name: 'Travel', type: 'expense', icon: '✈️', color: '#E74C3C' },
+  { name: 'Other', type: 'expense', icon: '💰', color: '#95A5A6' },
+  // Income categories
+  { name: 'Salary', type: 'income', icon: '💼', color: '#27AE60' },
+  { name: 'Freelance', type: 'income', icon: '💻', color: '#2980B9' },
+  { name: 'Investment', type: 'income', icon: '📈', color: '#F39C12' },
+  { name: 'Bonus', type: 'income', icon: '🎁', color: '#E67E22' },
+  { name: 'Other Income', type: 'income', icon: '💵', color: '#16A085' },
+];
+
+const createDefaultCategories = async (userId) => {
+  try {
+    const existingCategories = await Category.countDocuments({ userId });
+    if (existingCategories === 0) {
+      const categoriesWithUserId = DEFAULT_CATEGORIES.map(cat => ({
+        ...cat,
+        userId
+      }));
+      await Category.insertMany(categoriesWithUserId);
+    }
+  } catch (error) {
+    console.error('Error creating default categories:', error);
+  }
+};
 
 export const googleAuth = async (req, res) => {
   try {
@@ -22,6 +57,8 @@ export const googleAuth = async (req, res) => {
     const { email, name, picture } = payload;
 
     let user = await User.findOne({ email });
+    let isNewUser = false;
+    
     if (!user) {
       user = new User({
         name: name || email.split('@')[0],
@@ -30,6 +67,9 @@ export const googleAuth = async (req, res) => {
         avatar: picture,
       });
       await user.save();
+      isNewUser = true;
+      // Create default categories for new user
+      await createDefaultCategories(user._id);
     }
 
     const authToken = generateToken(user._id);
@@ -68,6 +108,9 @@ export const registerUser = async (req, res) => {
  
     const user = new User({ name, email, password });
     await user.save();
+    
+    // Create default categories for new user
+    await createDefaultCategories(user._id);
  
     const token = generateToken(user._id);
 
