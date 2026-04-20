@@ -19,7 +19,7 @@ const budgetSchema = new mongoose.Schema(
     },
     month: {
       type: String,
-      required: true, // Format: YYYY-MM
+      required: true,
     },
     spent: {
       type: Number,
@@ -34,8 +34,7 @@ const budgetSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
-// Index for better query performance
+ 
 budgetSchema.index({ userId: 1, month: 1 });
 budgetSchema.index({ userId: 1, category: 1, month: 1 });
 

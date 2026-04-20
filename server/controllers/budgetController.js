@@ -12,7 +12,6 @@ export const getBudgets = async (req, res) => {
       month: currentMonth,
     }).populate('category');
 
-    // Calculate spent for each budget
     const enrichedBudgets = await Promise.all(
       budgets.map(async (budget) => {
         const spent = await Transaction.aggregate([
@@ -58,8 +57,7 @@ export const createBudget = async (req, res) => {
     if (!category || !limit || !month) {
       return errorResponse(res, 'Required fields missing', 400);
     }
-
-    // Check if budget already exists
+ 
     const existing = await Budget.findOne({
       userId: req.userId,
       category,

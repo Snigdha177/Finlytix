@@ -7,8 +7,7 @@ export const getTransactions = async (req, res) => {
   try {
     const { page = 1, limit = 10, type, category, startDate, endDate, search, sort = '-date' } = req.query;
     const skip = (parseInt(page) - 1) * parseInt(limit);
-
-    // Build filter
+ 
     const filter = { userId: req.userId };
     if (type) filter.type = type;
     if (category) filter.category = category;
@@ -44,7 +43,6 @@ export const createTransaction = async (req, res) => {
   try {
     const { description, amount, type, category, date, tags, notes, recurring, recurringType, recurringEnd } = req.body;
 
-    // Validation
     if (!description || !amount || !type || !category) {
       return errorResponse(res, 'Required fields missing', 400);
     }
@@ -66,7 +64,6 @@ export const createTransaction = async (req, res) => {
     await transaction.save();
     await transaction.populate('category');
 
-    // Update budget spent amount
     if (type === 'expense') {
       const month = new Date(transaction.date).toISOString().slice(0, 7);
       await Budget.findOneAndUpdate(
@@ -93,8 +90,6 @@ export const updateTransaction = async (req, res) => {
     if (transaction.userId.toString() !== req.userId) {
       return errorResponse(res, 'Not authorized', 401);
     }
-
-    // If amount or type changed, update budget
     if ((req.body.amount && req.body.amount !== transaction.amount) || req.body.type) {
       const oldMonth = new Date(transaction.date).toISOString().slice(0, 7);
       if (transaction.type === 'expense') {
@@ -136,8 +131,6 @@ export const deleteTransaction = async (req, res) => {
     if (transaction.userId.toString() !== req.userId) {
       return errorResponse(res, 'Not authorized', 401);
     }
-
-    // Update budget
     if (transaction.type === 'expense') {
       const month = new Date(transaction.date).toISOString().slice(0, 7);
       await Budget.findOneAndUpdate(
@@ -177,7 +170,6 @@ export const getAnalytics = async (req, res) => {
       ...dateFilter,
     }).populate('category');
 
-    // Calculate totals
     const totalIncome = transactions
       .filter((t) => t.type === 'income')
       .reduce((sum, t) => sum + t.amount, 0);
@@ -185,8 +177,7 @@ export const getAnalytics = async (req, res) => {
     const totalExpense = transactions
       .filter((t) => t.type === 'expense')
       .reduce((sum, t) => sum + t.amount, 0);
-
-    // Category breakdown
+ 
     const categoryBreakdown = {};
     transactions
       .filter((t) => t.type === 'expense')
@@ -197,8 +188,7 @@ export const getAnalytics = async (req, res) => {
         }
         categoryBreakdown[categoryName] += t.amount;
       });
-
-    // Daily breakdown (last 30 days)
+ 
     const dailyData = {};
     for (let i = 29; i >= 0; i--) {
       const date = new Date();

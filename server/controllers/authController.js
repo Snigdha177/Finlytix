@@ -13,7 +13,6 @@ export const googleAuth = async (req, res) => {
       return errorResponse(res, 'Google token is required', 400);
     }
 
-    // Verify the token
     const ticket = await googleClient.verifyIdToken({
       idToken: token,
       audience: process.env.GOOGLE_CLIENT_ID,
@@ -22,7 +21,6 @@ export const googleAuth = async (req, res) => {
     const payload = ticket.getPayload();
     const { email, name, picture } = payload;
 
-    // Find or create user
     let user = await User.findOne({ email });
     if (!user) {
       user = new User({
@@ -34,7 +32,6 @@ export const googleAuth = async (req, res) => {
       await user.save();
     }
 
-    // Generate token
     const authToken = generateToken(user._id);
 
     successResponse(res, {
@@ -56,7 +53,6 @@ export const registerUser = async (req, res) => {
   try {
     const { name, email, password, confirmPassword } = req.body;
 
-    // Validation
     if (!name || !email || !password || !confirmPassword) {
       return errorResponse(res, 'All fields are required', 400);
     }
@@ -64,18 +60,15 @@ export const registerUser = async (req, res) => {
     if (password !== confirmPassword) {
       return errorResponse(res, 'Passwords do not match', 400);
     }
-
-    // Check if user already exists
+ 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return errorResponse(res, 'Email already registered', 400);
     }
-
-    // Create new user
+ 
     const user = new User({ name, email, password });
     await user.save();
-
-    // Generate token
+ 
     const token = generateToken(user._id);
 
     successResponse(
@@ -100,25 +93,21 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    // Validation
+ 
     if (!email || !password) {
       return errorResponse(res, 'Email and password are required', 400);
     }
-
-    // Find user and get password field
+ 
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
       return errorResponse(res, 'Invalid email or password', 401);
     }
 
-    // Check password
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return errorResponse(res, 'Invalid email or password', 401);
     }
 
-    // Generate token
     const token = generateToken(user._id);
 
     successResponse(res, {

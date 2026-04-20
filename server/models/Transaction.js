@@ -33,7 +33,7 @@ const transactionSchema = new mongoose.Schema(
     },
     tags: [String],
     notes: String,
-    attachments: [String], // File paths
+    attachments: [String], 
     recurring: {
       type: Boolean,
       default: false,
@@ -53,8 +53,7 @@ const transactionSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
-// Index for better query performance
+ 
 transactionSchema.index({ userId: 1, date: -1 });
 transactionSchema.index({ userId: 1, category: 1 });
 transactionSchema.index({ userId: 1, type: 1 });

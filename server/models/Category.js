@@ -31,8 +31,7 @@ const categorySchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
-// Index for better query performance
+ 
 categorySchema.index({ userId: 1, type: 1 });
 
 export default mongoose.model('Category', categorySchema);

@@ -20,31 +20,27 @@ const io = new SocketServer(httpServer, {
     methods: ['GET', 'POST'],
   },
 });
-
-// Middleware
+ 
 app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:3000',
   credentials: true,
 }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
-
-// Connect Database
+ 
 connectDB();
-
-// API Routes
+ 
 app.use('/api/auth', authRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/budgets', budgetRoutes);
 app.use('/api/notifications', notificationRoutes);
-
-// Health check
+ 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'Server is running', timestamp: new Date() });
 });
 
-// Socket.IO Setup
+ 
 const userSockets = {};
 
 io.on('connection', (socket) => {
@@ -65,14 +61,12 @@ io.on('connection', (socket) => {
   });
 });
 
-// Make io accessible to routes
+ 
 app.locals.io = io;
 app.locals.userSockets = userSockets;
 
-// Error handling middleware
 app.use(errorHandler);
 
-// 404 handler
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -84,15 +78,14 @@ const PORT = process.env.PORT || 5000;
 
 httpServer.listen(PORT, () => {
   console.log(`
-╔═══════════════════════════════════════════════════════════════╗
-║                                                               ║
-║   Finance Tracker Server Started Successfully! 🚀             ║
-║   Port: ${PORT}                                           ║
-║   Environment: ${process.env.NODE_ENV || 'development'}                            ║
-║   API: http://localhost:${PORT}/api                      ║
-║   WebSocket: Ready                                            ║
-║                                                               ║
-╚═══════════════════════════════════════════════════════════════╝
+
+                                                               
+   Finance Tracker Server Started Successfully! 🚀             
+   Port: ${PORT}                                           
+   Environment: ${process.env.NODE_ENV || 'development'}                            
+   API: http://localhost:${PORT}/api                      
+   WebSocket: Ready                                            
+                                                               
   `);
 });
 
