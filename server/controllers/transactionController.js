@@ -1,6 +1,7 @@
 import Transaction from '../models/Transaction.js';
 import Category from '../models/Category.js';
 import Budget from '../models/Budget.js';
+import Notification from '../models/Notification.js';
 import { successResponse, errorResponse, paginationMeta } from '../utils/response.js';
 
 export const getTransactions = async (req, res) => {
@@ -64,24 +65,44 @@ export const createTransaction = async (req, res) => {
     await transaction.save();
     await transaction.populate('category');
 
+    // Create notification for transaction
+    await Notification.create({
+      userId: req.userId,
+      type: 'transaction',
+      title: `${type === 'expense' ? 'Expense' : 'Income'} Added`,
+      message: `${description} - ${amount}`,
+      description: `${type === 'expense' ? 'New expense' : 'New income'} added in ${transaction.category.name}`,
+      read: false,
+    });
+
     if (type === 'expense') {
       const month = new Date(transaction.date).toISOString().slice(0, 7);
-      await Budget.findOneAndUpdate(
-        { userId: req.userId, category, month },
-        { $inc: { spent: amount } },
-        { upsert: false }
-      );
+      const budget = await Budget.findOne({ userId: req.userId, category, month });
+      
+      if (budget) {
+        budget.spent += amount;
+        await budget.save();
+
+        // Check if budget exceeded 80%
+        const percentageUsed = (budget.spent / budget.amount) * 100;
+        if (percentageUsed >= 80 && budget.spent - amount < budget.amount * 0.8) {
+          // Create budget alert notification
+          await Notification.create({
+            userId: req.userId,
+            type: 'budget',
+            title: 'Budget Alert',
+            message: `You've reached 80% of your budget for ${transaction.category.name}`,
+            description: `Spent: $${budget.spent} of $${budget.amount}`,
+            read: false,
+          });
+        }
+      }
     }
 
     successResponse(res, { transaction }, 'Transaction created', 201);
   } catch (error) {
     errorResponse(res, error.message, 500, error);
   }
-
-   if (!req.body.recurringType) {
-  delete req.body.recurringType;
-  }
-
 };
 
 export const updateTransaction = async (req, res) => {

@@ -12,8 +12,8 @@ const router = express.Router();
 router.use(authenticate);
 
 router.get('/', getNotifications);
-router.put('/:id/read', markAsRead);
 router.put('/read-all', markAllAsRead);
+router.put('/:id/read', markAsRead);
 router.delete('/:id', deleteNotification);
 
 export default router;
