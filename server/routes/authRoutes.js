@@ -8,5 +8,6 @@ router.post('/register', registerUser);
 router.post('/login', loginUser);
 router.post('/google', googleAuth);
 router.put('/profile', authenticate, updateProfile);
+router.get('/me', authenticate, getCurrentUser);
 
 export default router;

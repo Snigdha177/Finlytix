@@ -2,7 +2,7 @@
   "name": "finance-tracker-client",
   "version": "2.0.0",
   "private": true,
-  "proxy": "http://localhost:5000",
+  "type": "module",
   "dependencies": {
     "@react-oauth/google": "^0.13.5",
     "axios": "^1.6.2",
@@ -19,32 +19,16 @@
     "zustand": "^4.4.1"
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "^4.1.1",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.31",
-    "react-scripts": "5.0.1",
-    "tailwindcss": "^3.3.6"
+    "tailwindcss": "^3.3.6",
+    "vite": "^5.0.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "dev": "vite",
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   }
 }

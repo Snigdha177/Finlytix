@@ -189,6 +189,7 @@ export const getCurrentUser = async (req, res) => {
   }
 };
 
+
 export const updateProfile = async (req, res) => {
   try {
     const { name, theme, currency, emailNotifications, notificationThreshold } = req.body;

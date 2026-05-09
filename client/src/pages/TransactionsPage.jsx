@@ -28,7 +28,8 @@ export default function TransactionsPage() {
       toast.success('Transaction added successfully!');
       setIsModalOpen(false);
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to add transaction');
+      console.log(error);
+     toast.error(error.response?.data?.message || 'Failed to add transaction')
     } finally {
       setLoading(false);
     }

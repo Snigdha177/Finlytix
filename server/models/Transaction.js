@@ -40,7 +40,7 @@ const transactionSchema = new mongoose.Schema(
     },
     recurringType: {
       type: String,
-      enum: ['daily', 'weekly', 'monthly', 'yearly'],
+      enum: ['daily', 'weekly', 'monthly', 'yearly',null],
       default: null,
     },
     recurringEnd: Date,

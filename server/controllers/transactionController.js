@@ -77,6 +77,11 @@ export const createTransaction = async (req, res) => {
   } catch (error) {
     errorResponse(res, error.message, 500, error);
   }
+
+   if (!req.body.recurringType) {
+  delete req.body.recurringType;
+  }
+
 };
 
 export const updateTransaction = async (req, res) => {
