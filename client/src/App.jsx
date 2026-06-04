@@ -6,6 +6,8 @@ import { useData } from './hooks/useData';
 
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import DashboardPage from './pages/DashboardPage';
 import TransactionsPage from './pages/TransactionsPage';
 import CategoriesPage from './pages/CategoriesPage';
@@ -73,6 +75,18 @@ function App() {
           path="/register"
           element={
             isAuthenticated ? <Navigate to="/" /> : <RegisterPage />
+          }
+        />
+        <Route
+          path="/forgot-password"
+          element={
+            isAuthenticated ? <Navigate to="/" /> : <ForgotPasswordPage />
+          }
+        />
+        <Route
+          path="/reset-password"
+          element={
+            isAuthenticated ? <Navigate to="/" /> : <ResetPasswordPage />
           }
         />
         <Route

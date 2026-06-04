@@ -109,10 +109,10 @@ export default function DashboardPage() {
         </div>
 
         {/* Budget Overview */}
-        <BudgetOverview budgets={budgets} transactions={transactions} />
+        <BudgetOverview budgets={budgets} transactions={transactions} currency={user?.currency || 'USD'} />
 
         {/* Recent Transactions */}
-        <RecentTransactions transactions={transactions.slice(0, 10)} />
+        <RecentTransactions transactions={transactions.slice(0, 10)} currency={user?.currency || 'USD'} />
       </div>
     </Layout>
   );

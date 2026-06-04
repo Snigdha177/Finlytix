@@ -2,7 +2,7 @@ import React from 'react';
 import { formatCurrency } from '../utils/helpers';
 import { AlertCircle } from 'lucide-react';
 
-export default function BudgetOverview({ budgets, transactions }) {
+export default function BudgetOverview({ budgets, transactions, currency = 'USD' }) {
   const getSpentAmount = (budget) => {
     return transactions
       .filter(
@@ -73,10 +73,10 @@ export default function BudgetOverview({ budgets, transactions }) {
 
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-600 dark:text-gray-400">
-                  {formatCurrency(spent)} of {formatCurrency(budget.limit)} spent
+                  {formatCurrency(spent, currency)} of {formatCurrency(budget.limit, currency)} spent
                 </span>
                 <span className="text-gray-600 dark:text-gray-400">
-                  {formatCurrency(remaining)} remaining
+                  {formatCurrency(remaining, currency)} remaining
                 </span>
               </div>
             </div>

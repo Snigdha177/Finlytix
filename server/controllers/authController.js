@@ -3,6 +3,8 @@ import Category from '../models/Category.js';
 import { generateToken } from '../utils/jwt.js';
 import { successResponse, errorResponse } from '../utils/response.js';
 import { OAuth2Client } from 'google-auth-library';
+import crypto from 'crypto';
+import nodemailer from 'nodemailer';
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -211,6 +213,82 @@ export const updateProfile = async (req, res) => {
     }
 
     successResponse(res, { user }, 'Profile updated successfully');
+  } catch (error) {
+    errorResponse(res, error.message, 500, error);
+  }
+};
+
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return errorResponse(res, 'Email is required', 400);
+    }
+
+    const user = await User.findOne({ email });
+    
+    // Don't reveal if email exists (security best practice)
+    if (!user) {
+      return successResponse(res, {}, 'Check your email for reset link', 200);
+    }
+
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const tokenHash = crypto.createHash('sha256').update(resetToken).digest('hex');
+
+    // Store hashed token in DB (24 hours expiry)
+    user.passwordResetToken = tokenHash;
+    user.passwordResetExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    await user.save();
+
+    // Build reset URL for frontend
+    const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}&email=${email}`;
+    
+    // TODO: Send email with resetUrl
+    console.log('Reset URL:', resetUrl);
+
+    successResponse(res, {}, 'Check your email for reset link', 200);
+  } catch (error) {
+    errorResponse(res, error.message, 500, error);
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  try {
+    const { email, token, newPassword, confirmPassword } = req.body;
+
+    if (!email || !token || !newPassword || !confirmPassword) {
+      return errorResponse(res, 'All fields required', 400);
+    }
+
+    if (newPassword !== confirmPassword) {
+      return errorResponse(res, 'Passwords do not match', 400);
+    }
+
+    if (newPassword.length < 6) {
+      return errorResponse(res, 'Password too short', 400);
+    }
+
+    // Hash incoming token and compare with stored hash
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+    const user = await User.findOne({
+      email,
+      passwordResetToken: tokenHash,
+      passwordResetExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return errorResponse(res, 'Token expired or invalid', 400);
+    }
+
+    // Update password
+    user.password = newPassword;
+    user.passwordResetToken = null;
+    user.passwordResetExpires = null;
+    await user.save();
+
+    successResponse(res, {}, 'Password updated successfully', 200);
   } catch (error) {
     errorResponse(res, error.message, 500, error);
   }

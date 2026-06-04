@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { formatCurrency, formatDate } from '../utils/helpers';
 import { ChevronUp, ChevronDown, Trash2, Edit2 } from 'lucide-react';
 
-export default function RecentTransactions({ transactions }) {
+export default function RecentTransactions({ transactions, currency = 'USD' }) {
   const [sortBy, setSortBy] = useState('date');
 
   const sortedTransactions = [...transactions].sort((a, b) => {
@@ -78,7 +78,7 @@ export default function RecentTransactions({ transactions }) {
                       }`}
                     >
                       {transaction.type === 'income' ? '+' : '-'}
-                      {formatCurrency(transaction.amount)}
+                      {formatCurrency(transaction.amount, currency)}
                     </span>
                   </div>
                 </td>

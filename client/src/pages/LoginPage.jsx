@@ -92,6 +92,14 @@ export default function LoginPage() {
                 className="input-field pl-10"
               />
             </div>
+            <div className="text-right mt-2">
+              <Link
+                to="/forgot-password"
+                className="text-sm text-primary hover:underline font-medium"
+              >
+                Forgot password?
+              </Link>
+            </div>
           </div>
 
           <button
