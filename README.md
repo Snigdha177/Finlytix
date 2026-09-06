@@ -2,25 +2,25 @@
 
 Finlytix is a full-stack personal finance analytics platform built using the MERN stack. It helps users track expenses, manage budgets, and gain intelligent insights into their spending habits.
 
-## 🎯 Features
+##  Features
 
 ### Core Features
-- ✅ **User Authentication** - Secure JWT-based authentication with password hashing
-- ✅ **Dashboard** - Real-time financial overview with charts and statistics
-- ✅ **Transaction Management** - Track income and expenses with detailed categorization
-- ✅ **Budget Tracking** - Create monthly budgets and monitor spending with visual progress
-- ✅ **Category Management** - Organize transactions with custom expense/income categories
-- ✅ **Advanced Analytics** - 30-day trends, category breakdown, spending patterns
-- ✅ **Dark/Light Mode** - Beautiful UI with theme toggle support
-- ✅ **Responsive Design** - Works seamlessly on desktop, tablet, and mobile devices
+-  **User Authentication** - Secure JWT-based authentication with password hashing
+-  **Dashboard** - Real-time financial overview with charts and statistics
+-  **Transaction Management** - Track income and expenses with detailed categorization
+-  **Budget Tracking** - Create monthly budgets and monitor spending with visual progress
+-  **Category Management** - Organize transactions with custom expense/income categories
+-  **Advanced Analytics** - 30-day trends, category breakdown, spending patterns
+-  **Dark/Light Mode** - Beautiful UI with theme toggle support
+-  **Responsive Design** - Works seamlessly on desktop, tablet, and mobile devices
 
 ### Advanced Features
-- 📊 **Interactive Charts** - Line charts for trends, pie charts for category breakdown
-- 💾 **CSV Export** - Download transaction data for analysis
-- 🔔 **Budget Alerts** - Visual warnings when approaching budget limits
-- 🎨 **Customizable** - Multiple currencies, notification thresholds, preferences
-- 📱 **Mobile Optimized** - Touch-friendly interface and responsive layout
-- ⚡ **Real-time Updates** - Socket.IO integration for live notifications
+-  **Interactive Charts** - Line charts for trends, pie charts for category breakdown
+-  **CSV Export** - Download transaction data for analysis
+-  **Budget Alerts** - Visual warnings when approaching budget limits
+-  **Customizable** - Multiple currencies, notification thresholds, preferences
+-  **Mobile Optimized** - Touch-friendly interface and responsive layout
+-  **Real-time Updates** - Socket.IO integration for live notifications
 
 ## 🛠 Tech Stack
 
@@ -48,7 +48,7 @@ Finlytix is a full-stack personal finance analytics platform built using the MER
 - **Docker & Docker Compose** - Containerization
 - **Environment Variables** - Configuration management
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 Finance Tracker/
@@ -140,4 +140,4 @@ For issues or questions, create an issue in the repository.
 
 ## 📧 Contact
 
-Built with ❤️ for financial tracking excellence.
+Built with ❤️ for financial tracking.
